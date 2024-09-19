@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Coupen Page</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+<div class="container">
+    <!-- code here -->
+    <div class="card">
+        <div class="card-image">
+            <h2 class="card-heading">
+                Get Your Coupon
+                <small>And Enjoy !</small>
+            </h2>
+        </div>
+        <form class="card-form" id="couponForm">
+            <div class="input">
+                <input id="full-name" type="text" class="input-field" autocomplete="on" required/>
+                <label class="input-label">Full name</label>
+            </div>
+            <div class="input">
+                <input id="phone-number" type="text" class="input-field" pattern="[7-9]{1}[0-9]{9}"
+                       title="Enter 10 Digit Number" autocomplete="on" required/>
+                <label class="input-label">Phone(+91)</label>
+            </div>
+            <div class="action">
+                <button type="submit" class="action-button">Get started</button>
+            </div>
+        </form>
+        <div class="card-info">
+            <p>By signing up you are agreeing to our <a href="#">Terms and Conditions</a></p>
+        </div>
+    </div>
+</div>
+
+<canvas id="confettiCanvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></canvas>
+
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Congratulations!</h2>
+        </div>
+        <div class="modal-body">
+            <p>You get Money within 2-3 working days</p>
+        </div>
+        <div class="modal-footer">
+            <button class="close-modal-button">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('couponForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    // Confetti animation
+    const confettiCanvas = document.getElementById('confettiCanvas');
+    const ctx = confettiCanvas.getContext('2d');
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+
+    const confettiCount = 300;
+    const confetti = [];
+    const colors = ['#ff0', '#f00', '#0f0', '#00f', '#f0f', '#0ff'];
+    let animationFrameId;
+
+    for (let i = 0; i < confettiCount; i++) {
+        confetti.push({
+            x: Math.random() * confettiCanvas.width,
+            y: Math.random() * confettiCanvas.height - confettiCanvas.height,
+            r: Math.random() * 6 + 4,
+            d: Math.random() * confettiCount,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            tilt: Math.random() * 10 - 10,
+            tiltAngleIncremental: Math.random() * 0.07 + 0.05,
+            tiltAngle: 0
+        });
+    }
+
+    function drawConfetti() {
+        ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        confetti.forEach((c, index) => {
+            c.tiltAngle += c.tiltAngleIncremental;
+            c.y += (Math.cos(c.d) + 3 + c.r / 2) / 2;
+            c.tilt = Math.sin(c.tiltAngle - index / 3) * 15;
+
+            if (c.y > confettiCanvas.height) {
+                confetti[index] = {
+                    x: Math.random() * confettiCanvas.width,
+                    y: -10,
+                    r: c.r,
+                    d: c.d,
+                    color: c.color,
+                    tilt: c.tilt,
+                    tiltAngleIncremental: c.tiltAngleIncremental,
+                    tiltAngle: c.tiltAngle
+                };
+            }
+
+            ctx.beginPath();
+            ctx.lineWidth = c.r / 2;
+            ctx.strokeStyle = c.color;
+            ctx.moveTo(c.x + c.tilt + c.r, c.y);
+            ctx.lineTo(c.x + c.tilt, c.y + c.tilt + c.r);
+            ctx.stroke();
+        });
+    }
+
+    function updateConfetti() {
+        drawConfetti();
+        animationFrameId = requestAnimationFrame(updateConfetti);
+    }
+
+    updateConfetti();
+
+    // Show modal
+    const modal = document.getElementById('modal');
+    const closeModalButton = document.querySelector('.close-modal-button');
+
+    modal.style.display = 'block';
+
+    function closeModal() {
+        modal.style.display = 'none';
+        cancelAnimationFrame(animationFrameId);
+         ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+    }
+
+    closeModalButton.addEventListener('click', closeModal);
+
+    window.addEventListener('click', function(event) {
+        if (event.target == modal) {
+            closeModal();
+        }
+    });
+});
+
+</script>
+</body>
+</html>
