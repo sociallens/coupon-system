@@ -1,0 +1,16 @@
+package com.coupon.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@RestController
+public class RestCon {
+
+    @RequestMapping(value = "/webhook", method = RequestMethod.POST)
+    public String indexPage(String code) {
+        System.out.println("p: " + code);
+        return "ok";
+    }
+}
