@@ -8,9 +8,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RestController
 public class RestCon {
 
-    @RequestMapping(value = "/webhook", method = RequestMethod.POST)
-    public String indexPage(String code) {
-        System.out.println("p: " + code);
-        return "ok";
+    @GetMapping("/webhook")
+    public ResponseEntity<String> verifyWebhook(
+            @RequestParam(name = "hub.mode") String mode,
+            @RequestParam(name = "hub.challenge") String challenge,
+            @RequestParam(name = "hub.verify_token") String token) {
+
+        String VERIFY_TOKEN = "your_verify_token"; // Replace with your verify token
+
+        
+            return ResponseEntity.ok(challenge); // Respond with the challenge token
+        
     }
 }
